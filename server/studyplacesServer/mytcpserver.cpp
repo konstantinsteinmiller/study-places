@@ -19,6 +19,7 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent)
     timer=new QTimer;
     connect(timer, SIGNAL(timeout()), this, SLOT(updateHeatMap()));
     timer->start(1000);
+    heatmapstr=heatmap.getStr();
 
 }
 
@@ -27,18 +28,26 @@ void MyTcpServer::newConnection()
     // need to grab the socket
     QTcpSocket *socket = server->nextPendingConnection();
 
-    std::cout<<"Got new Connection from "<<socket->peerAddress().toString().toStdString()<<std::endl;
+    std::cout<<"\n\n\nGot new Connection from "<<socket->peerAddress().toString().toStdString()<<std::endl;
 
-    QByteArray Buffer;
-
-    if(socket->waitForReadyRead(30000)){
+    QString Buffer;
+    if(socket->waitForReadyRead(20000)){
         Buffer=socket->readAll();
-        std::cout<<QString(Buffer).toStdString()<<std::endl;
+        std::cout<<"received Data: "<<Buffer.toStdString()<<std::endl;
+        if(Buffer.at(0)=="{"){
+            heatmap.addData(Buffer);
+        }
+        else if(Buffer.at(0)=="r"){
+            std::cout<<"sending "<<heatmapstr.toStdString()<<" to client "<<socket->peerAddress().toString().toStdString()<<std::endl;
+            socket->write(heatmapstr.toLocal8Bit());
+            socket->waitForBytesWritten(1000);
+        }
     }
     socket->close();
 }
 
 void MyTcpServer::updateHeatMap()
 {
-    std::cout<<"Timer called"<<std::endl;
+    heatmapstr=heatmap.getStr();
+    heatmap.reset();
 }

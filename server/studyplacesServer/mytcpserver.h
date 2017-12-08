@@ -6,6 +6,7 @@
 #include <QTcpSocket>
 #include <iostream>
 #include <QTimer>
+#include "heatmap.h"
 
 class MyTcpServer : public QObject
 {
@@ -22,6 +23,8 @@ public slots:
 private:
     QTcpServer *server;
     QTimer *timer;
+    HeatMap heatmap;
+    QString heatmapstr;
 };
 
 #endif // MYTCPSERVER_H
