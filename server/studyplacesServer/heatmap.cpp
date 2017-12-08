@@ -13,7 +13,24 @@ void HeatMap::reset()
 
 QString HeatMap::getStr()
 {
-    return "{}";
+    QString heatMapStr="{\"map\":[";
+    if(data.size()>0)
+    {
+        unsigned int i=0;
+        for(i;i<data.size()-1;i++)
+        {
+            heatMapStr+="[{\"latitude\":"+QString::number(data.at(i).latitude)+",\"longitude\":"+
+                        QString::number(data.at(0).longitude)+",\"total\":"+QString::number(data.at(i).total)+"}],";
+        }
+        heatMapStr+="[{\"latitude\":"+QString::number(data.at(i).latitude)+",\"longitude\":"+
+                    QString::number(data.at(i).longitude)+",\"total\":"+QString::number(data.at(i).total)+"}]]}";
+        return heatMapStr;
+    }
+    else
+    {
+        heatMapStr+="]}";
+    }
+    return heatMapStr;
 }
 
 void HeatMap::addData(QString jsonStr)

@@ -18,9 +18,8 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent)
     }
     timer=new QTimer;
     connect(timer, SIGNAL(timeout()), this, SLOT(updateHeatMap()));
-    timer->start(10000);
+    timer->start(20000);
     heatmapstr=heatmap.getStr();
-
 }
 
 void MyTcpServer::newConnection()
