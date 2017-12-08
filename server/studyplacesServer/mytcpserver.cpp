@@ -18,7 +18,7 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent)
     }
     timer=new QTimer;
     connect(timer, SIGNAL(timeout()), this, SLOT(updateHeatMap()));
-    timer->start(10000);
+    timer->start(1000);
 
 }
 
@@ -38,7 +38,7 @@ void MyTcpServer::newConnection()
     socket->close();
 }
 
-void MyTcpServer::update()
+void MyTcpServer::updateHeatMap()
 {
     std::cout<<"Timer called"<<std::endl;
 }
