@@ -30,6 +30,8 @@ void MyTcpServer::newConnection()
     std::cout<<"\n\n\nGot new Connection from "<<socket->peerAddress().toString().toStdString()<<std::endl;
 
     QString Buffer;
+    socket->waitForReadyRead(10000);
+            Buffer=socket->readAll();
     if(socket->waitForReadyRead(10000)){
         Buffer=socket->readAll();
         std::cout<<"received Data: "<<Buffer.toStdString()<<std::endl;
