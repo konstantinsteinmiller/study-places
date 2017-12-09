@@ -6,25 +6,39 @@
 #include <QTcpSocket>
 #include <iostream>
 #include <QTimer>
+#include <QWebSocketServer>
+#include <QWebSocket>
 #include "heatmap.h"
 
-class MyTcpServer : public QObject
+class MyWebServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit MyTcpServer(QObject *parent = 0);
+    explicit MyWebServer(quint16 port, bool debug = false, QObject *parent = Q_NULLPTR);
+    ~MyWebServer();
 
-signals:
+Q_SIGNALS:
+    void closed();
 
-public slots:
-    void newConnection();
-    void updateHeatMap();
+private Q_SLOTS:
+    void onNewConnection();
+    void processTextMessage(QString message);
+    void processBinaryMessage(QByteArray message);
+    void socketDisconnected();
 
 private:
-    QTcpServer *server;
+    QWebSocketServer *m_pWebSocketServer;
+    QList<QWebSocket *> m_clients;
+    bool m_debug;
+
     QTimer *timer;
     HeatMap heatmap;
     QString heatmapstr;
+
+public slots:
+
+    void updateHeatMap();
+
 };
 
 #endif // MYTCPSERVER_H

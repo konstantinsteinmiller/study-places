@@ -1,5 +1,6 @@
 QT += core
 QT += network
+QT += websockets
 QT -= gui
 
 CONFIG += c++11

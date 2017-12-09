@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    MyTcpServer server;
+    MyWebServer server(10001,true);
 
     return a.exec();
 }
