@@ -30,20 +30,28 @@ void MyTcpServer::newConnection()
     std::cout<<"\n\n\nGot new Connection from "<<socket->peerAddress().toString().toStdString()<<std::endl;
 
     QString Buffer;
-    socket->waitForReadyRead(10000);
-            Buffer=socket->readAll();
-    if(socket->waitForReadyRead(10000)){
-        Buffer=socket->readAll();
-        std::cout<<"received Data: "<<Buffer.toStdString()<<std::endl;
-        if(Buffer.at(0)=='{'){
-            heatmap.addData(Buffer);
-        }
-        else if(Buffer.at(0)=='r'){
-            std::cout<<"sending "<<heatmapstr.toStdString()<<" to client "<<socket->peerAddress().toString().toStdString()<<std::endl;
-            socket->write(heatmapstr.toLocal8Bit());
-            socket->waitForBytesWritten(1000);
+
+    while(true)
+    {
+        if(socket->waitForReadyRead(10000)){
+                Buffer=socket->readAll();
+                std::cout<<"received Data: "<<Buffer.toStdString()<<std::endl;
         }
     }
+
+
+//    if(socket->waitForReadyRead(10000)){
+//        Buffer=socket->readAll();
+//        std::cout<<"received Data: "<<Buffer.toStdString()<<std::endl;
+//        if(Buffer.at(0)=='{'){
+//            heatmap.addData(Buffer);
+//        }
+//        else if(Buffer.at(0)=='r'){
+//            std::cout<<"sending "<<heatmapstr.toStdString()<<" to client "<<socket->peerAddress().toString().toStdString()<<std::endl;
+//            socket->write(heatmapstr.toLocal8Bit());
+//            socket->waitForBytesWritten(1000);
+//        }
+//    }
     socket->close();
 }
 
