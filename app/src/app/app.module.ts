@@ -15,7 +15,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { BLE } from '@ionic-native/ble';
 import { HttpClientModule } from '@angular/common/http';
-// import { webtcp } from 'webtcp';
+import { Geolocation } from '@ionic-native/geolocation';
 
 @NgModule({
   declarations: [
@@ -39,7 +39,7 @@ import { HttpClientModule } from '@angular/common/http';
     TabsPage
   ],
   providers: [
-    // webtcp,
+    Geolocation,
     BluetoothSerial,
     BLE,
     StatusBar,

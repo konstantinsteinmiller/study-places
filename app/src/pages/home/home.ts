@@ -3,9 +3,8 @@ import { Component } from '@angular/core';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { AlertController } from 'ionic-angular';
 import { HttpClient } from "@angular/common/http";
-// import { webtcp } from "webtcp";
+import { Geolocation } from '@ionic-native/geolocation';
 
-// import { BLE } from '@ionic-native/ble';
 
 @Component({
   selector: 'page-home',
@@ -13,17 +12,33 @@ import { HttpClient } from "@angular/common/http";
 })
 export class HomePage {
   totalDevices: Number;
+  pos: any;
   unpairedDevices: any;
   pairedDevices: any;
   gettingDevices: Boolean;
 
-  constructor(private bluetoothSerial: BluetoothSerial, private alertCtrl: AlertController, /*private ble: BLE, */private http: HttpClient) {
+  constructor(private bluetoothSerial: BluetoothSerial, private alertCtrl: AlertController, private http: HttpClient, private geo:Geolocation) {
     bluetoothSerial.enable();
     var connection = new WebSocket('ws://52.178.92.214:10001', ['TCP']);
 
-    connection.onopen = function () {
+    connection.onopen = function (res) {
+      console.log('opened connection to ws://52.178.92.214:10001: ', res);
       connection.send('Ping=================================================='); // Send the message 'Ping' to the server
     };
+    connection.onmessage = function (res) {
+      console.log('onmessage Pong: ', res);
+      connection.send('Ping =================================================='); // Send the message 'Ping' to the server
+    };
+
+
+    let watch = this.geo.watchPosition();
+    watch.subscribe((data) => {
+      console.log('data: ', data);
+      // data can be a set of coordinates, or an error (if an error occurred).
+      this.pos = { latitude: data.coords.latitude, longitude: data.coords.longitude };
+    }, err => {
+      console.log('err: ', err);
+    });
   }
 
   postToServer() {
