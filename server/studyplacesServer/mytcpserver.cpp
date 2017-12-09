@@ -36,6 +36,8 @@ void MyTcpServer::newConnection()
         if(socket->waitForReadyRead(10000)){
                 Buffer=socket->readAll();
                 std::cout<<"received Data: "<<Buffer.toStdString()<<std::endl;
+                socket->write(Buffer.toLocal8Bit());
+                socket->waitForBytesWritten(1000);
         }
     }
 
