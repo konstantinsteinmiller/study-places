@@ -4,8 +4,9 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { AlertController } from 'ionic-angular';
 import { HttpClient } from "@angular/common/http";
 import { Geolocation } from '@ionic-native/geolocation';
+import { ToastController } from 'ionic-angular';
 
-var studyPlacesApi = 'ws://52.178.92.214:10001';
+var studyPlacesApi = 'ws://52.178.92.214:10001/';
 
 @Component({
   selector: 'page-home',
@@ -21,7 +22,11 @@ export class HomePage {
   latitude: Number;
   longitude: Number;
 
-  constructor(private bluetoothSerial: BluetoothSerial, private alertCtrl: AlertController, private http: HttpClient, private geo:Geolocation) {
+  constructor(private bluetoothSerial: BluetoothSerial,
+              private alertCtrl: AlertController,
+              private http: HttpClient,
+              private geo: Geolocation,
+              private toastCtrl: ToastController) {
     bluetoothSerial.enable();
 
 
@@ -34,66 +39,79 @@ export class HomePage {
       this.longitude = data.coords.longitude;
     }, err => {
       console.log('err: ', err);
+      this.activateGPS();
     });
 
-    // var connection = new WebSocket(studyPlacesApi);
-    // this.connection = connection;
-    // this.startScanning();
+    var connection = new WebSocket(studyPlacesApi);
+    this.connection = connection;
+    this.startScanning();
 
-    // connection.onopen = function (res) {
-    //   console.log('opened connection to ws://52.178.92.214:10001: ', res);
-    //   connection.send('Opened Ping !'); // Send the message 'Ping' to the server
-    // };
-    // connection.onmessage = function (res) {
-    //   console.log('res: ', res);
-    //   connection.send('Message  Ping !'); // Send the message 'Ping' to the server
-    //   // this.receiveHeatMap(res);
-    // };
+    connection.onopen = function (res) {
+      console.log('opened connection to ws://52.178.92.214:10001: ', res);
+      connection.send('Opened Ping !'); // Send the message 'Ping' to the server
+    };
+    connection.onmessage = function (res) {
+      console.log('res: ', res);
+      connection.send('Message  Ping !'); // Send the message 'Ping' to the server
+      // this.receiveHeatMap(res);
+    };
 
-  }
-
-  postToServer() {
-    var body = {"uuid":"testUUID", "longitude": 12313313, "latitude":123211233, "list":[], "total": 25};
-    this.http.post('http://52.178.92.214', body)
-      .subscribe(result => {
-        console.log('result: ', result);
-      }, error => { console.error('postToServer error: ', error);});
   }
   receiveHeatMap() {
-    console.log('res: ');
-    this.connection.send('answer  Ping !'); // Send the message 'Ping' to the server
+    // console.log('res: ');
+    // this.connection.send('answer  Ping !'); // Send the message 'Ping' to the server
   }
   startScanning() {
     this.pairedDevices = [];
     this.unpairedDevices = [];
     this.gettingDevices = true;
-    this.pos = null;
     var connection = new WebSocket(studyPlacesApi);
     this.connection = connection;
     var self = this;
+
+    this.http.get('129.13.27.50:8080/api/').subscribe( (res) => {
+      console.log('res: ', res);
+    }, err => {
+
+    });
     // self.connection.onopen = function (res) {
     //   console.log('opened connection to ws://52.178.92.214:10001: ', res);
-    //   self.connection.send('Opened Ping !'); // Send the message 'Ping' to the server
+    //   const data = JSON.stringify({ "uuid": "BlubUSER",
+    //                                 "longitude": self.longitude,
+    //                                 "latitude": self.latitude,
+    //                                 "list":[],
+    //                                 "total": self.totalDevices });
+    //   self.presentToast();
+    //   self.connection.send(data); // Send the message 'Ping' to the server
     // };
     // self.connection.onmessage = function (res) {
+    //   console.log('Message res: ', res);
     //   self.receiveHeatMap();
     // };
-    this.bluetoothSerial.discoverUnpaired().then((success) => {
+    /*this.bluetoothSerial.discoverUnpaired === 'function' && */this.bluetoothSerial.discoverUnpaired().then((success) => {
         this.unpairedDevices = success;
         this.gettingDevices = false;
 
         this.totalDevices = this.unpairedDevices.length + this.pairedDevices.length;
 
-        self.connection.onopen = function (res) {
-          console.log('opened connection to ws://52.178.92.214:10001: ', res);
-          self.connection.send({ "uuid": "BlubUSER", "longitude": self.longitude, "latitude": self.latitude, "list":[], "total": self.totalDevices }); // Send the message 'Ping' to the server
-        };
-        self.connection.onmessage = function (res) {
-          self.receiveHeatMap();
-        };
+        // if (this.longitude !== null && this.latitude !== null) {
+          self.connection.onopen = function (res) {
+            console.log('opened connection to ws://52.178.92.214:10001: ', res);
+            const data = JSON.stringify({ "uuid": "BlubUSER",
+              "longitude": self.longitude,
+              "latitude": self.latitude,
+              "list":[],
+              "total": self.totalDevices });
+            self.presentToast();
+            self.connection.send(data); // Send the message 'Ping' to the server
+          };
+          self.connection.onmessage = function (res) {
+            console.log('Message res: ', res);
+            self.receiveHeatMap();
+          };
+        // }
         success.forEach(element => {
           // console.log('elements: ',/* element.name,*/ element);
-          //
 
           // if (this.pos !== null) {
           //   connection.onopen = function (res) {
@@ -129,12 +147,27 @@ export class HomePage {
       })
 
     setTimeout(function () {
-      this.startScanning();
+      self.startScanning();
     }, 30000);
 
   }
   success = (data) => alert(data);
   fail = (error) => alert(error);
+
+  presentToast() {
+    let toast = this.toastCtrl.create({
+      message: 'sent: ',
+      duration: 3000
+    });
+    toast.present();
+  }
+  activateGPS () {
+    let toast = this.toastCtrl.create({
+      message: 'please activate ure gps',
+      duration: 3000
+    });
+    toast.present();
+  }
 
   selectDevice(address: any) {
 
@@ -161,26 +194,26 @@ export class HomePage {
 
   }
 
-  disconnect() {
-    let alert = this.alertCtrl.create({
-      title: 'Disconnect?',
-      message: 'Do you want to Disconnect?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Disconnect',
-          handler: () => {
-            this.bluetoothSerial.disconnect();
-          }
-        }
-      ]
-    });
-    alert.present();
-  }
+  // disconnect() {
+  //   let alert = this.alertCtrl.create({
+  //     title: 'Disconnect?',
+  //     message: 'Do you want to Disconnect?',
+  //     buttons: [
+  //       {
+  //         text: 'Cancel',
+  //         role: 'cancel',
+  //         handler: () => {
+  //           console.log('Cancel clicked');
+  //         }
+  //       },
+  //       {
+  //         text: 'Disconnect',
+  //         handler: () => {
+  //           this.bluetoothSerial.disconnect();
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   alert.present();
+  // }
 }

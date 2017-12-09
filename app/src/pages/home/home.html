@@ -8,10 +8,9 @@
   <h2>Welcome to Ionic!</h2>
   <ion-list padding>
     <ion-item>
-      {{ pos | json }}
+      {{ latitude }} - {{ longitude }}
       <!-- - {{ pos.latitude }}-->
     </ion-item>
-    <!--<button ion-button block (click)="postToServer()">postToServer</button>-->
 
     <button ion-button block (click)="startScanning()">find study places</button>
     <ion-list-header>
@@ -20,7 +19,8 @@
     <ion-item *ngFor="let device of pairedDevices">
       {{device.name}}
     </ion-item>
-    <button ion-button block (click)="disconnect()">Disconnect</button>
+    <!--<button ion-button block (click)="disconnect()">Disconnect</button>-->
+    <hr>
     <ion-list-header>
       availlable Devices
     </ion-list-header>

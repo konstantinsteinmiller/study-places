@@ -16,6 +16,7 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { BLE } from '@ionic-native/ble';
 import { HttpClientModule } from '@angular/common/http';
 import { Geolocation } from '@ionic-native/geolocation';
+import { ToastController } from 'ionic-angular';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { Geolocation } from '@ionic-native/geolocation';
     BLE,
     StatusBar,
     SplashScreen,
+    ToastController,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
