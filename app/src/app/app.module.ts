@@ -13,6 +13,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { BLE } from '@ionic-native/ble';
+import { HttpClientModule } from '@angular/common/http';
+import { Geolocation } from '@ionic-native/geolocation';
+import { ToastController } from 'ionic-angular';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,8 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    HttpClientModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -35,9 +40,12 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
     TabsPage
   ],
   providers: [
+    Geolocation,
     BluetoothSerial,
+    BLE,
     StatusBar,
     SplashScreen,
+    ToastController,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

@@ -1,27 +1,33 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>Local study places</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <h2>Welcome to Ionic!</h2>
   <ion-list padding>
-    <button ion-button block (click)="startScanning()">scan</button>
+    <ion-item>
+      {{ latitude }} - {{ longitude }}
+      <!-- - {{ pos.latitude }}-->
+    </ion-item>
+
+    <button ion-button block (click)="startScanning()">find study places</button>
     <ion-list-header>
       Paired Devices
     </ion-list-header>
     <ion-item *ngFor="let device of pairedDevices">
       {{device.name}}
     </ion-item>
-    <button ion-button block (click)="disconnect()">Disconnect</button>
+    <!--<button ion-button block (click)="disconnect()">Disconnect</button>-->
+    <hr>
     <ion-list-header>
       availlable Devices
     </ion-list-header>
     <ion-item *ngFor='let device of unpairedDevices'>
-    <span (click)="selectDevice(device.address)">
-      {{device.name}}
-    </span>
+      <span (click)="selectDevice(device.address)">
+        {{device.name}}
+      </span>
     </ion-item>
     <ion-spinner name="crescent" *ngIf="gettingDevices"></ion-spinner>
   </ion-list>
