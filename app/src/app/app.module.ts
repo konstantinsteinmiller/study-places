@@ -13,6 +13,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { BLE } from '@ionic-native/ble';
+import { HttpClientModule } from '@angular/common/http';
+// import { webtcp } from 'webtcp';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,8 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    HttpClientModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -35,7 +39,9 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
     TabsPage
   ],
   providers: [
+    // webtcp,
     BluetoothSerial,
+    BLE,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
